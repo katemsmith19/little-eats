@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>little eats. — real food. real simple.</title>
+<style>
+  :root{
+    --forest:#4c5c34;
+    --forest-deep:#3a481f;
+    --sage:#8b9a6b;
+    --sage-soft:#dfe4d0;
+    --cream:#f7f3e9;
+    --cream-deep:#efe8d6;
+    --paper:#fffdf7;
+    --clay:#c67c54;
+    --clay-soft:#efd9c9;
+    --gold:#d7b061;
+    --ink:#39392c;
+    --ink-soft:#6f6f5c;
+    --line:#e6ddc9;
+    --shadow:0 4px 18px rgba(74,74,40,.08);
+    --shadow-lg:0 24px 60px rgba(74,74,40,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    color:var(--ink);background:var(--cream);line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+
+  /* wordmark */
+  .mark{display:inline-flex;align-items:baseline;gap:7px;font-family:"Iowan Old Style",Palatino,Georgia,serif;
+    font-weight:700;color:var(--forest);letter-spacing:-.01em;line-height:.95;text-decoration:none;cursor:pointer;}
+  .mark .stack{display:flex;flex-direction:column;}
+  .mark .stack span:last-child{margin-top:-4px;}
+  .mark .dot{color:var(--clay);}
+
+  /* header with tab bar */
+  header{position:sticky;top:0;z-index:20;background:rgba(247,243,233,.9);
+    backdrop-filter:saturate(1.2) blur(10px);border-bottom:1px solid var(--line);}
+  .topbar{display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .topbar .mark{font-size:26px;}
+  .tabbar{border-top:1px solid var(--line);}
+  .tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{white-space:nowrap;height:52px;display:inline-flex;align-items:center;padding:0 8px;
+    color:var(--ink-soft);text-decoration:none;font-weight:650;font-size:15px;cursor:pointer;
+    border-bottom:2px solid transparent;transition:color .15s ease,border-color .15s ease;}
+  .tab:hover{color:var(--forest);}
+  .tab.active{color:var(--forest);border-bottom-color:var(--clay);}
+
+  .btn{display:inline-block;background:var(--forest);color:#fff;text-decoration:none;
+    font-weight:650;font-size:15px;padding:11px 20px;border-radius:999px;border:none;cursor:pointer;
+    transition:transform .15s ease,background .15s ease;}
+  .btn:hover{background:var(--forest-deep);transform:translateY(-1px);}
+  .btn.clay{background:var(--clay);}
+  .btn.clay:hover{background:#b06a45;}
+  @media(max-width:560px){.topbar .btn{font-size:13px;padding:9px 15px;}}
+
+  /* tab panels */
+  .tabpanel{display:none;}
+  .tabpanel.active{display:block;animation:fadein .45s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;background:
+     radial-gradient(120% 90% at 85% -10%, #fbf6ea 0%, var(--cream) 55%);}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;
+    padding-top:64px;padding-bottom:80px;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin-bottom:20px;}
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--sage);border-radius:2px;}
+  h1{font-size:clamp(38px,5.6vw,60px);line-height:1.03;letter-spacing:-.02em;color:var(--forest-deep);
+    text-wrap:balance;margin-bottom:20px;}
+  h1 em{font-style:italic;color:var(--clay);}
+  .hero p.lede{font-size:19px;color:var(--ink-soft);max-width:44ch;margin-bottom:30px;}
+  .hero-cta{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+  .hero-cta .muted{font-size:13.5px;color:var(--ink-soft);}
+
+  /* realistic meal-bite illustration */
+  .plate-wrap{display:flex;justify-content:center;position:relative;}
+  .halo{position:absolute;inset:0;margin:auto;width:360px;height:360px;border-radius:50%;
+    background:radial-gradient(circle,#fff 0%,#fbf3e4 60%,transparent 72%);}
+  .plate{position:relative;width:340px;height:340px;border-radius:50%;
+    background:radial-gradient(circle at 38% 32%,#ffffff,#f0ead9 78%,#e7dcc4);
+    box-shadow:var(--shadow-lg),inset 0 0 0 18px #fbf7ec,inset 0 0 0 20px #ece2cd;
+    display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
+    place-items:center;padding:52px;}
+
+  .bite{width:70px;height:68px;border-radius:50%;position:relative;
+    background:
+      radial-gradient(circle at 30% 32%, #e88f3c 0 2.7px, transparent 3.3px),
+      radial-gradient(circle at 63% 37%, #6f9a3a 0 2.3px, transparent 2.9px),
+      radial-gradient(circle at 47% 60%, #d76f2c 0 2.3px, transparent 2.9px),
+      radial-gradient(circle at 73% 63%, #5f8c36 0 2.1px, transparent 2.7px),
+      radial-gradient(circle at 33% 69%, #cf9a45 0 2.3px, transparent 2.9px),
+      radial-gradient(circle at 56% 24%, #7a5528 0 1.9px, transparent 2.5px),
+      radial-gradient(circle at 20% 49%, #edb257 0 2.2px, transparent 2.8px),
+      radial-gradient(circle at 81% 47%, #e59a3c 0 1.9px, transparent 2.5px),
+      radial-gradient(circle at 44% 43%, #7fa23f 0 1.9px, transparent 2.5px),
+      radial-gradient(circle at 65% 77%, #d98a3a 0 1.9px, transparent 2.5px),
+      radial-gradient(circle at 26% 24%, #f6ecd0 0 1.3px, transparent 1.9px),
+      radial-gradient(circle at 52% 70%, #f6ecd0 0 1.3px, transparent 1.9px),
+      radial-gradient(circle at 70% 30%, #f6ecd0 0 1.3px, transparent 1.9px),
+      radial-gradient(circle at 38% 55%, rgba(120,88,38,.4) 0 1.2px, transparent 1.8px),
+      radial-gradient(circle at 60% 52%, rgba(120,88,38,.4) 0 1.2px, transparent 1.8px),
+      radial-gradient(circle at 28% 62%, rgba(120,88,38,.35) 0 1.1px, transparent 1.7px),
+      radial-gradient(circle at 78% 66%, rgba(255,248,225,.6) 0 1.2px, transparent 1.8px),
+      radial-gradient(circle at 37% 31%, #f3e4bd 0%, #e8cd8d 46%, #d5ae66 73%, #ba9049 100%);
+    background-repeat:no-repeat;
+    box-shadow:
+      inset -6px -8px 14px rgba(120,85,35,.38),
+      inset 5px 7px 12px rgba(255,248,225,.5),
+      0 9px 15px rgba(120,90,30,.26),
+      0 2px 4px rgba(120,90,30,.28);}
+  .bite::after{content:"";position:absolute;top:12%;left:18%;width:38%;height:30%;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.62),transparent 68%);filter:blur(2.5px);pointer-events:none;}
+  .bite:nth-child(2){transform:translateY(-4px) rotate(64deg) scale(1.02);}
+  .bite:nth-child(3){transform:rotate(147deg);}
+  .bite:nth-child(4){transform:translate(-3px,3px) rotate(215deg) scale(.97);}
+  .bite:nth-child(5){transform:rotate(98deg) scale(1.03);}
+  .bite:nth-child(6){transform:translate(3px,-2px) rotate(305deg);}
+  .bite:nth-child(7){transform:rotate(27deg) scale(.98);}
+  .bite:nth-child(8){transform:translateY(4px) rotate(179deg);}
+  .bite:nth-child(9){transform:rotate(251deg) scale(1.01);}
+
+  .float-tag{position:absolute;background:#fff;border-radius:14px;box-shadow:var(--shadow);
+    padding:10px 14px;font-size:13px;font-weight:650;color:var(--forest);display:flex;align-items:center;gap:8px;}
+  .float-tag .ic{width:26px;height:26px;border-radius:50%;background:var(--sage-soft);
+    display:grid;place-items:center;font-size:14px;}
+  .float-tag.t1{top:6px;left:-6px;}
+  .float-tag.t2{bottom:24px;right:-14px;}
+
+  @media(max-width:860px){
+    .hero .wrap{grid-template-columns:1fr;text-align:center;padding-bottom:56px;}
+    .eyebrow{margin-inline:auto;}
+    .hero p.lede{margin-inline:auto;}
+    .hero-cta{justify-content:center;}
+    .plate-wrap{margin-top:20px;}
+  }
+
+  /* generic section */
+  section{padding:78px 0;}
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 52px;}
+  .sec-head .kicker{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--clay);margin-bottom:14px;}
+  .sec-head h2{font-size:clamp(30px,4.2vw,42px);line-height:1.08;letter-spacing:-.01em;
+    color:var(--forest-deep);text-wrap:balance;}
+  .sec-head p{font-size:18px;color:var(--ink-soft);margin-top:16px;}
+
+  /* problem section */
+  .problem{background:var(--paper);}
+  .q-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:44px;}
+  .q-card{background:var(--cream);border:1px solid var(--line);border-radius:16px;padding:22px 22px;
+    font-size:16px;color:var(--ink);position:relative;padding-left:52px;}
+  .q-card::before{content:"?";position:absolute;left:18px;top:20px;width:24px;height:24px;border-radius:50%;
+    background:var(--sage-soft);color:var(--forest);font-weight:800;display:grid;place-items:center;font-size:14px;}
+  .dilemma{background:linear-gradient(160deg,var(--forest),var(--forest-deep));color:#fff;
+    border-radius:22px;padding:44px;text-align:center;box-shadow:var(--shadow-lg);}
+  .dilemma h3{font-size:clamp(22px,3vw,30px);font-weight:600;margin-bottom:10px;letter-spacing:-.01em;}
+  .dilemma .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:24px 0 22px;}
+  .dilemma .chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+    padding:9px 18px;border-radius:999px;font-weight:600;font-size:15px;}
+  .dilemma .punch{font-size:20px;color:#fbe9d8;}
+  .dilemma .punch em{color:#fff;font-style:normal;font-weight:700;}
+
+  /* vision */
+  .vision-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .v-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:30px 26px;
+    box-shadow:var(--shadow);transition:transform .25s ease,box-shadow .25s ease;}
+  .v-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+  .v-card .n{font-family:"Iowan Old Style",Georgia,serif;font-size:30px;color:var(--clay);
+    line-height:1;margin-bottom:14px;font-weight:700;}
+  .v-card h3{font-size:20px;color:var(--forest-deep);margin-bottom:8px;letter-spacing:-.01em;}
+  .v-card p{color:var(--ink-soft);font-size:15.5px;}
+  @media(max-width:760px){.vision-grid{grid-template-columns:1fr;}}
+
+  /* bite anatomy */
+  .anatomy{background:var(--cream-deep);}
+  .anatomy .inner{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+  .anatomy h2{font-size:clamp(28px,3.6vw,38px);color:var(--forest-deep);letter-spacing:-.01em;margin-bottom:14px;text-wrap:balance;}
+  .anatomy .big{font-family:"Iowan Old Style",Georgia,serif;font-style:italic;color:var(--clay);}
+  .anatomy p.sub{color:var(--ink-soft);font-size:17px;margin-bottom:26px;}
+  .comp-list{display:grid;gap:14px;}
+  .comp{display:flex;align-items:center;gap:14px;background:var(--paper);border-radius:14px;
+    padding:14px 18px;border:1px solid var(--line);}
+  .comp .swatch{width:38px;height:38px;border-radius:11px;flex:none;}
+  .comp b{display:block;font-size:16px;color:var(--ink);}
+  .comp small{color:var(--ink-soft);font-size:13.5px;}
+  .anatomy-art{display:flex;justify-content:center;}
+  .megabite{width:270px;height:262px;border-radius:50%;position:relative;
+    background:
+      radial-gradient(circle at 28% 30%, #f6eccf 0 3px, transparent 4px),
+      radial-gradient(circle at 55% 66%, #f6eccf 0 3px, transparent 4px),
+      radial-gradient(circle at 72% 40%, #f2e6c6 0 2.5px, transparent 3.5px),
+      radial-gradient(circle at 40% 52%, rgba(120,88,38,.3) 0 2px, transparent 3px),
+      radial-gradient(circle at 62% 46%, rgba(120,88,38,.28) 0 2px, transparent 3px),
+      radial-gradient(circle at 30% 70%, rgba(120,88,38,.26) 0 1.8px, transparent 2.8px),
+      radial-gradient(circle at 78% 62%, rgba(255,248,225,.6) 0 2px, transparent 3px),
+      radial-gradient(circle at 37% 31%, #f4e6bf 0%, #e9cf8e 46%, #d6b068 74%, #bc9346 100%);
+    background-repeat:no-repeat;
+    box-shadow:var(--shadow-lg),
+      inset -16px -20px 38px rgba(120,85,35,.4),
+      inset 14px 18px 30px rgba(255,248,225,.5);}
+  .megabite::after{content:"";position:absolute;top:12%;left:18%;width:36%;height:28%;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.55),transparent 68%);filter:blur(4px);}
+  .megabite span{position:absolute;border-radius:6px;
+    box-shadow:inset 0 -3px 5px rgba(60,40,10,.25),inset 0 2px 3px rgba(255,255,255,.45),0 2px 4px rgba(80,60,20,.22);}
+  .megabite .p1{width:34px;height:29px;background:linear-gradient(150deg,#8db056,#6f9038);top:27%;left:23%;transform:rotate(12deg);}
+  .megabite .p2{width:30px;height:25px;background:linear-gradient(150deg,#e58a3d,#cf6f28);top:20%;right:25%;transform:rotate(-9deg);}
+  .megabite .p3{width:33px;height:24px;background:linear-gradient(150deg,#f2e7cb,#e0cfa4);bottom:25%;left:27%;transform:rotate(7deg);}
+  .megabite .p4{width:25px;height:22px;background:linear-gradient(150deg,#6d8c3d,#54702f);bottom:29%;right:25%;transform:rotate(-15deg);}
+  .megabite .p5{width:23px;height:20px;background:linear-gradient(150deg,#d99a52,#c17e34);top:47%;left:45%;transform:rotate(20deg);}
+  .megabite .p6{width:20px;height:18px;background:linear-gradient(150deg,#e58a3d,#c9682a);top:58%;left:64%;transform:rotate(-6deg);}
+  .measure{position:absolute;right:-46px;top:0;bottom:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;color:var(--ink-soft);font-size:12px;font-weight:700;}
+  .measure .bar{width:1px;flex:1;background:var(--sage);margin:6px 0;position:relative;}
+  .measure .bar::before,.measure .bar::after{content:"";position:absolute;left:-4px;width:9px;height:1px;background:var(--sage);}
+  .measure .bar::before{top:0;}.measure .bar::after{bottom:0;}
+  @media(max-width:820px){.anatomy .inner{grid-template-columns:1fr;gap:36px;}}
+
+  /* lineup */
+  .lineup-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .flavor{background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;
+    box-shadow:var(--shadow);transition:transform .25s ease,box-shadow .25s ease;}
+  .flavor:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);}
+  .flavor .top{height:120px;display:grid;place-items:center;position:relative;}
+  .flavor .top .mini{width:66px;height:64px;border-radius:50%;position:relative;
+    background:
+      radial-gradient(circle at 32% 34%, rgba(90,60,20,.35) 0 2px, transparent 2.7px),
+      radial-gradient(circle at 64% 44%, rgba(90,120,50,.55) 0 1.8px, transparent 2.5px),
+      radial-gradient(circle at 48% 64%, rgba(200,110,50,.6) 0 1.8px, transparent 2.5px),
+      radial-gradient(circle at 72% 66%, rgba(90,60,20,.3) 0 1.6px, transparent 2.3px),
+      radial-gradient(circle at 30% 66%, rgba(255,248,225,.6) 0 1.5px, transparent 2.2px),
+      radial-gradient(circle at 37% 32%, var(--mini-a), var(--mini-b) 72%, var(--mini-c));
+    background-repeat:no-repeat;
+    box-shadow:inset -4px -6px 10px rgba(120,85,35,.3),inset 4px 5px 9px rgba(255,248,225,.5),
+      0 6px 11px rgba(120,90,30,.22);}
+  .flavor .top .mini::after{content:"";position:absolute;top:13%;left:20%;width:36%;height:28%;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.6),transparent 68%);filter:blur(2px);}
+  .flavor .body{padding:22px 24px 26px;}
+  .flavor h3{font-size:19px;color:var(--forest-deep);margin-bottom:4px;letter-spacing:-.01em;}
+  .flavor .desc{font-family:"Iowan Old Style",Georgia,serif;font-style:italic;color:var(--clay);font-size:14.5px;margin-bottom:10px;}
+  .flavor .ing{font-size:14.5px;color:var(--ink-soft);}
+  .flavor .spice{font-size:13px;color:var(--sage);margin-top:8px;}
+  .flavor .spice b{color:var(--forest);font-weight:700;}
+  .flavor .pill{position:absolute;top:14px;right:14px;font-size:11px;font-weight:700;
+    background:rgba(255,255,255,.8);color:var(--forest);padding:4px 10px;border-radius:999px;}
+  .f1 .top{background:linear-gradient(160deg,#f6eccf,#eed9a4);}
+  .f1 .mini{--mini-a:#f4dfa6;--mini-b:#e0b866;--mini-c:#c99a45;}
+  .f2 .top{background:linear-gradient(160deg,#f7e2c4,#efbf7f);}
+  .f2 .mini{--mini-a:#f3c785;--mini-b:#e29a4a;--mini-c:#c47f34;}
+  .f3 .top{background:linear-gradient(160deg,#f2e7d0,#dcc79c);}
+  .f3 .mini{--mini-a:#ecd9ac;--mini-b:#cdae76;--mini-c:#b3934f;}
+  .f4 .top{background:linear-gradient(160deg,#f4ddce,#e5b199);}
+  .f4 .mini{--mini-a:#eecdb0;--mini-b:#d88f68;--mini-c:#bd7048;}
+  .f5 .top{background:linear-gradient(160deg,#f6ddba,#ecb56a);}
+  .f5 .mini{--mini-a:#f1c07e;--mini-b:#dd9540;--mini-c:#c07a2c;}
+  .f6 .top{background:linear-gradient(160deg,#efe0c6,#d8bd8a);}
+  .f6 .mini{--mini-a:#e6cf9f;--mini-b:#b98d55;--mini-c:#9c723f;}
+  @media(max-width:900px){.lineup-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:600px){.lineup-grid{grid-template-columns:1fr;}}
+
+  /* benefits — baby + you */
+  .benefits{background:var(--paper);}
+  .ben-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  .ben{border-radius:22px;padding:36px 34px;border:1px solid var(--line);}
+  .ben.baby{background:linear-gradient(165deg,#eef2e3,#e2e9cf);}
+  .ben.you{background:linear-gradient(165deg,#f6e7db,#f0dcc9);}
+  .ben .tag{display:inline-flex;align-items:center;gap:9px;font-weight:700;font-size:13px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--forest);margin-bottom:18px;}
+  .ben.you .tag{color:var(--clay);}
+  .ben .tag .ic{width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:16px;}
+  .ben h3{font-size:24px;color:var(--forest-deep);letter-spacing:-.01em;margin-bottom:18px;text-wrap:balance;}
+  .ben ul{list-style:none;display:grid;gap:14px;}
+  .ben li{display:flex;gap:12px;font-size:15.5px;color:var(--ink);}
+  .ben li::before{content:"";flex:none;width:20px;height:20px;border-radius:50%;margin-top:2px;
+    background:var(--forest) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/12px no-repeat;}
+  .ben.you li::before{background-color:var(--clay);}
+  .ben li b{font-weight:700;}
+  .ben-note{text-align:center;font-size:13.5px;color:var(--ink-soft);margin-top:26px;max-width:60ch;margin-inline:auto;}
+  @media(max-width:760px){.ben-cols{grid-template-columns:1fr;}}
+
+  /* how to serve */
+  .serve-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:st;}
+  .step{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:30px 26px;position:relative;}
+  .step .num{counter-increment:st;font-family:"Iowan Old Style",Georgia,serif;font-size:15px;font-weight:700;
+    color:#fff;background:var(--sage);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;margin-bottom:16px;}
+  .step .num::before{content:counter(st);}
+  .step h3{font-size:18px;color:var(--forest-deep);margin-bottom:6px;}
+  .step p{font-size:15px;color:var(--ink-soft);}
+  @media(max-width:760px){.serve-steps{grid-template-columns:1fr;}}
+
+  /* cta band */
+  .cta-band{background:linear-gradient(160deg,var(--forest),var(--forest-deep));color:#fff;text-align:center;}
+  .cta-band h2{font-size:clamp(30px,4.4vw,46px);letter-spacing:-.01em;margin-bottom:16px;text-wrap:balance;}
+  .cta-band h2 em{font-style:italic;color:#f3cba8;}
+  .cta-band p{font-size:18px;color:#e7ecd9;max-width:52ch;margin:0 auto 30px;}
+  .signup{display:flex;gap:10px;max-width:440px;margin:0 auto;flex-wrap:wrap;justify-content:center;}
+  .signup input{flex:1;min-width:220px;border:none;border-radius:999px;padding:14px 20px;font-size:15px;
+    font-family:inherit;background:rgba(255,255,255,.95);color:var(--ink);}
+  .signup input:focus{outline:3px solid rgba(243,203,168,.6);}
+  .cta-band .fine{font-size:13px;color:#c7d2b4;margin-top:16px;}
+
+  /* footer */
+  footer{background:var(--cream-deep);padding:44px 0;}
+  footer .inner{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
+  footer .mark{font-size:24px;}
+  footer .tagline{font-family:"Iowan Old Style",Georgia,serif;font-style:italic;color:var(--sage);font-size:17px;}
+  footer .meta{font-size:13.5px;color:var(--ink-soft);text-align:right;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap topbar">
+    <a class="mark" data-tab="home">
+      <svg width="22" height="26" viewBox="0 0 22 26" fill="none" aria-hidden="true">
+        <path d="M11 25V11" stroke="#4c5c34" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M11 13C11 8 7 5 2 5c0 5 4 8 9 8Z" fill="#8b9a6b"/>
+        <path d="M11 10C11 6 14 3 19 3c0 4-3 7-8 7Z" fill="#4c5c34"/>
+      </svg>
+      <span class="stack"><span>little</span><span>eats<span class="dot">.</span></span></span>
+    </a>
+    <a class="btn clay" data-tab="join">Join the taste test</a>
+  </div>
+  <nav class="tabbar">
+    <div class="wrap tabs">
+      <a class="tab" data-tab="home">Home</a>
+      <a class="tab" data-tab="vision">Our vision</a>
+      <a class="tab" data-tab="bites">The bites</a>
+      <a class="tab" data-tab="benefits">Why it matters</a>
+      <a class="tab" data-tab="join">Join us</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===== TAB: HOME ===== -->
+  <div class="tabpanel active" id="panel-home">
+    <section class="hero">
+      <div class="wrap">
+        <div>
+          <span class="eyebrow">Complete meal bites · 6+ months</span>
+          <h1>Real food for little ones, made <em>real simple.</em></h1>
+          <p class="lede">Freezer-friendly meal bites for babies learning to eat real food — a whole mini meal of protein, whole grains, produce, and healthy fats in every bite you can see.</p>
+          <div class="hero-cta">
+            <a class="btn clay" data-tab="join">Join the taste test</a>
+            <span class="muted">Made fresh in Austin, TX · No fillers, no junk</span>
+          </div>
+        </div>
+        <div class="plate-wrap">
+          <div class="halo"></div>
+          <div class="plate" aria-hidden="true">
+            <div class="bite"></div><div class="bite"></div><div class="bite"></div>
+            <div class="bite"></div><div class="bite"></div><div class="bite"></div>
+            <div class="bite"></div><div class="bite"></div><div class="bite"></div>
+          </div>
+          <div class="float-tag t1"><span class="ic">❄️</span> Frozen for freshness</div>
+          <div class="float-tag t2"><span class="ic">🌱</span> Real ingredients</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="problem">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="kicker">Why we're here</div>
+          <h2>The leap from milk to meals brings a thousand questions.</h2>
+          <p>Starting solids is a beautiful milestone — and an overwhelming one. Every parent feels it.</p>
+        </div>
+        <div class="q-grid">
+          <div class="q-card">What foods should I introduce first?</div>
+          <div class="q-card">Is my baby getting enough nutrients?</div>
+          <div class="q-card">Is the texture actually safe?</div>
+          <div class="q-card">Am I offering enough variety?</div>
+          <div class="q-card">How do I cook healthy meals when I'm already exhausted?</div>
+          <div class="q-card">Do I really have to make two dinners every night?</div>
+        </div>
+        <div class="dilemma">
+          <h3>Today, parents feel forced to choose.</h3>
+          <div class="chips">
+            <span>Convenient</span><span>Nutritious</span><span>Affordable</span><span>Baby-safe texture</span>
+          </div>
+          <p class="punch">You want <em>one</em> dinner moment — not two versions of the same meal, and not twice the work. <em>What if you didn't have to choose?</em></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== TAB: OUR VISION ===== -->
+  <div class="tabpanel" id="panel-vision">
+    <section>
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="kicker">Our vision</div>
+          <h2>A world where every baby has access to real, nourishing food.</h2>
+          <p>Little Eats lives in the middle ground between exhausting homemade purées and ultra-processed convenience food — real food, made simple.</p>
+        </div>
+        <div class="vision-grid">
+          <div class="v-card">
+            <div class="n">01</div>
+            <h3>Babies deserve real ingredients</h3>
+            <p>Whole foods you can see and pronounce — never ultra-processed fillers or mystery purées.</p>
+          </div>
+          <div class="v-card">
+            <div class="n">02</div>
+            <h3>Parents deserve real convenience</h3>
+            <p>Nourishing meals that take minutes, without sacrificing nutrition or peace of mind.</p>
+          </div>
+          <div class="v-card">
+            <div class="n">03</div>
+            <h3>Mealtime is about connection</h3>
+            <p>Less time making two dinners, more time at the table together. Mealtime should be joyful — not stressful.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="anatomy">
+      <div class="wrap inner">
+        <div>
+          <h2>More than a snack. <span class="big">A complete mini meal.</span></h2>
+          <p class="sub">Every soft, self-feeding bite is balanced by design — four food groups in one, sized just right for tiny hands.</p>
+          <div class="comp-list">
+            <div class="comp"><span class="swatch" style="background:#e0b866"></span><div><b>Whole grains</b><small>brown rice · rolled oats · potato for lasting energy</small></div></div>
+            <div class="comp"><span class="swatch" style="background:#c9793f"></span><div><b>Protein</b><small>chicken · turkey · beef for growing bodies</small></div></div>
+            <div class="comp"><span class="swatch" style="background:#7d9a52"></span><div><b>Produce</b><small>carrot · pea · sweet potato · apple · pumpkin</small></div></div>
+            <div class="comp"><span class="swatch" style="background:#d9a35e"></span><div><b>Healthy fats</b><small>butter · olive oil · real cheese</small></div></div>
+          </div>
+        </div>
+        <div class="anatomy-art">
+          <div class="megabite" aria-hidden="true">
+            <span class="p1"></span><span class="p2"></span><span class="p3"></span>
+            <span class="p4"></span><span class="p5"></span><span class="p6"></span>
+            <div class="measure"><span>1"</span><div class="bar"></div><span>just right</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== TAB: THE BITES ===== -->
+  <div class="tabpanel" id="panel-bites">
+    <section>
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="kicker">Our meal bite lineup</div>
+          <h2>Six nourishing flavors. Endless possibilities.</h2>
+        </div>
+        <div class="lineup-grid">
+          <div class="flavor f1">
+            <div class="top"><div class="mini"></div><span class="pill">6+ months</span></div>
+            <div class="body"><h3>Chicken Fried Rice</h3><p class="desc">Classic Favorite</p><p class="ing">Chicken · brown rice · carrots · peas · butter</p><p class="spice"><b>Spices:</b> garlic powder</p></div>
+          </div>
+          <div class="flavor f2">
+            <div class="top"><div class="mini"></div><span class="pill">6+ months</span></div>
+            <div class="body"><h3>Sweet Potato Turkey</h3><p class="desc">Wholesome Comfort</p><p class="ing">Turkey · sweet potato · peas · onion</p><p class="spice"><b>Spices:</b> garlic powder, onion powder, paprika</p></div>
+          </div>
+          <div class="flavor f3">
+            <div class="top"><div class="mini"></div><span class="pill">6+ months</span></div>
+            <div class="body"><h3>Apple Cinnamon Chicken</h3><p class="desc">Sweet &amp; Cozy</p><p class="ing">Chicken · rolled oats · applesauce · carrots · butter</p><p class="spice"><b>Spices:</b> cinnamon, nutmeg</p></div>
+          </div>
+          <div class="flavor f4">
+            <div class="top"><div class="mini"></div><span class="pill">6+ months</span></div>
+            <div class="body"><h3>Margherita Chicken</h3><p class="desc">Italian Inspired</p><p class="ing">Chicken · brown rice · tomato paste · cauliflower rice · olive oil · mozzarella</p><p class="spice"><b>Spices:</b> basil, oregano, garlic powder</p></div>
+          </div>
+          <div class="flavor f5">
+            <div class="top"><div class="mini"></div><span class="pill">6+ months</span></div>
+            <div class="body"><h3>Pumpkin Turkey</h3><p class="desc">Warm &amp; Cozy</p><p class="ing">Turkey · brown rice · pumpkin purée · peas · butter</p><p class="spice"><b>Spices:</b> cinnamon, nutmeg</p></div>
+          </div>
+          <div class="flavor f6">
+            <div class="top"><div class="mini"></div><span class="pill">6+ months</span></div>
+            <div class="body"><h3>Cheeseburger</h3><p class="desc">Family Favorite</p><p class="ing">Beef · mashed potatoes · carrots · onions · cheddar cheese</p><p class="spice"><b>Spices:</b> garlic powder, onion powder, paprika</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="kicker">How to serve</div>
+          <h2>Mealtime made simple.</h2>
+        </div>
+        <div class="serve-steps">
+          <div class="step"><div class="num"></div><h3>Take out</h3><p>Grab the number of bites you need straight from the freezer.</p></div>
+          <div class="step"><div class="num"></div><h3>Warm</h3><p>Microwave 30–60 seconds, or thaw. Check the temperature before serving.</p></div>
+          <div class="step"><div class="num"></div><h3>Serve &amp; connect</h3><p>Serve, sit down, and enjoy the moment together. Perfect for tiny hands.</p></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== TAB: WHY IT MATTERS ===== -->
+  <div class="tabpanel" id="panel-benefits">
+    <section class="benefits">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="kicker">Why variety matters</div>
+          <h2>Every new bite is a chance to shape a lifetime of healthy eating.</h2>
+          <p>Introducing babies to a wide range of foods early may help them grow into more confident, adventurous eaters — and it lightens the load for you, too.</p>
+        </div>
+        <div class="ben-cols">
+          <div class="ben baby">
+            <div class="tag"><span class="ic">👶</span> For baby</div>
+            <h3>Building an adventurous eater</h3>
+            <ul>
+              <li><b>Beats picky eating.</b> Early exposure to many flavors and textures helps babies stay open to new foods as they grow.</li>
+              <li><b>Expands the palate.</b> Different produce, proteins, and gentle spices at the age when taste is still forming.</li>
+              <li><b>Gentle early exposure.</b> A varied diet introduces a wide range of everyday ingredients early — the way many pediatricians now encourage diverse introduction.</li>
+              <li><b>Right-sized textures.</b> Soft, squishy, easy-to-mash bites made for safe self-feeding and independence.</li>
+            </ul>
+          </div>
+          <div class="ben you">
+            <div class="tag"><span class="ic">💛</span> For you</div>
+            <h3>Confidence, not chaos</h3>
+            <ul>
+              <li><b>One meal moment.</b> No more cooking two dinners — grab the bites, warm, and sit down together.</li>
+              <li><b>Nutrition you can trust.</b> Balanced, dietitian-informed recipes so you're never guessing.</li>
+              <li><b>Less stress, more presence.</b> Spend the energy you'd spend prepping on connecting instead.</li>
+              <li><b>Freezer-ready.</b> Real food on hand for the busiest, most exhausting nights.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="ben-note">Little Eats is dietitian-informed, but every baby is different. Always introduce new foods and allergens with guidance from your pediatrician.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== TAB: JOIN ===== -->
+  <div class="tabpanel" id="panel-join">
+    <section class="cta-band">
+      <div class="wrap">
+        <h2>We're building Little Eats <em>with</em> parents.</h2>
+        <p>Before we launch, we want to learn from real families. Join the taste test and help shape the product — your honest feedback makes every bite better.</p>
+        <form class="signup" onsubmit="event.preventDefault();this.querySelector('input').value='';this.querySelector('button').textContent='Thank you! 💛';">
+          <input type="email" placeholder="Your email address" aria-label="Email address" required>
+          <button type="submit" class="btn clay">Count me in</button>
+        </form>
+        <p class="fine">There are no wrong answers — we just want the truth. One bite at a time.</p>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap inner">
+    <a class="mark" data-tab="home"><span class="stack"><span>little</span><span>eats<span class="dot">.</span></span></span></a>
+    <div class="tagline">real food. real simple.</div>
+    <div class="meta">Complete meal bites for little ones · Made in Austin, TX<br>© 2026 Little Eats · Supporting your baby's journey to real food.</div>
+  </div>
+</footer>
+
+<script>
+  const panels = document.querySelectorAll('.tabpanel');
+  const tabLinks = document.querySelectorAll('.tab');
+  function activate(id){
+    let found = false;
+    panels.forEach(p => { const on = p.id === 'panel-' + id; p.classList.toggle('active', on); if(on) found = true; });
+    if(!found){ id = 'home'; document.getElementById('panel-home').classList.add('active'); }
+    tabLinks.forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }
+  document.querySelectorAll('[data-tab]').forEach(el => {
+    el.addEventListener('click', e => { e.preventDefault(); activate(el.dataset.tab); });
+  });
+  activate('home');
+</script>
+</body>
+</html>
