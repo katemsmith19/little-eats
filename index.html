@@ -229,12 +229,15 @@
   .flavor:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);}
   .flavor .top{height:120px;display:grid;place-items:center;position:relative;}
   .flavor .top .mini{width:66px;height:64px;border-radius:50%;position:relative;
+    --spk1:rgba(90,60,20,.4);--spk2:rgba(90,120,50,.6);--spk3:rgba(200,110,50,.65);
+    --spk4:rgba(90,60,20,.3);--spk5:rgba(255,248,225,.62);--spk6:rgba(120,90,40,.4);
     background:
-      radial-gradient(circle at 32% 34%, rgba(90,60,20,.35) 0 2px, transparent 2.7px),
-      radial-gradient(circle at 64% 44%, rgba(90,120,50,.55) 0 1.8px, transparent 2.5px),
-      radial-gradient(circle at 48% 64%, rgba(200,110,50,.6) 0 1.8px, transparent 2.5px),
-      radial-gradient(circle at 72% 66%, rgba(90,60,20,.3) 0 1.6px, transparent 2.3px),
-      radial-gradient(circle at 30% 66%, rgba(255,248,225,.6) 0 1.5px, transparent 2.2px),
+      radial-gradient(circle at 32% 34%, var(--spk1) 0 2px, transparent 2.7px),
+      radial-gradient(circle at 64% 44%, var(--spk2) 0 1.9px, transparent 2.6px),
+      radial-gradient(circle at 48% 64%, var(--spk3) 0 1.9px, transparent 2.6px),
+      radial-gradient(circle at 72% 66%, var(--spk4) 0 1.6px, transparent 2.3px),
+      radial-gradient(circle at 30% 66%, var(--spk5) 0 1.5px, transparent 2.2px),
+      radial-gradient(circle at 56% 28%, var(--spk6) 0 1.6px, transparent 2.3px),
       radial-gradient(circle at 37% 32%, var(--mini-a), var(--mini-b) 72%, var(--mini-c));
     background-repeat:no-repeat;
     box-shadow:inset -4px -6px 10px rgba(120,85,35,.3),inset 4px 5px 9px rgba(255,248,225,.5),
@@ -249,18 +252,24 @@
   .flavor .spice b{color:var(--forest);font-weight:700;}
   .flavor .pill{position:absolute;top:14px;right:14px;font-size:11px;font-weight:700;
     background:rgba(255,255,255,.8);color:var(--forest);padding:4px 10px;border-radius:999px;}
+  /* Chicken Fried Rice — rice base, carrot + pea flecks */
   .f1 .top{background:linear-gradient(160deg,#f6eccf,#eed9a4);}
-  .f1 .mini{--mini-a:#f4dfa6;--mini-b:#e0b866;--mini-c:#c99a45;}
+  .f1 .mini{--mini-a:#f5e7c4;--mini-b:#e6cd93;--mini-c:#cdb069;--spk2:rgba(96,140,54,.7);--spk3:rgba(214,120,48,.72);}
+  /* Sweet Potato Turkey — orange base, pea + onion flecks */
   .f2 .top{background:linear-gradient(160deg,#f7e2c4,#efbf7f);}
-  .f2 .mini{--mini-a:#f3c785;--mini-b:#e29a4a;--mini-c:#c47f34;}
+  .f2 .mini{--mini-a:#f3c785;--mini-b:#e29a4a;--mini-c:#c47f34;--spk2:rgba(80,120,46,.72);--spk3:rgba(200,100,40,.6);--spk5:rgba(250,240,220,.72);}
+  /* Apple Cinnamon Chicken — oat base, apple + carrot + cinnamon flecks */
   .f3 .top{background:linear-gradient(160deg,#f2e7d0,#dcc79c);}
-  .f3 .mini{--mini-a:#ecd9ac;--mini-b:#cdae76;--mini-c:#b3934f;}
-  .f4 .top{background:linear-gradient(160deg,#f4ddce,#e5b199);}
-  .f4 .mini{--mini-a:#eecdb0;--mini-b:#d88f68;--mini-c:#bd7048;}
+  .f3 .mini{--mini-a:#eeddb4;--mini-b:#d6bd82;--mini-c:#bda05f;--spk1:rgba(120,70,30,.5);--spk2:rgba(170,60,45,.6);--spk3:rgba(210,120,50,.68);}
+  /* Margherita Chicken — potato/cauliflower base, tomato + basil flecks */
+  .f4 .top{background:linear-gradient(160deg,#f3e7d3,#e4c9ad);}
+  .f4 .mini{--mini-a:#f4e9d5;--mini-b:#e6d3b0;--mini-c:#cdb488;--spk2:rgba(70,130,55,.62);--spk3:rgba(200,60,45,.7);--spk5:rgba(255,252,244,.85);}
+  /* Pumpkin Turkey — pumpkin base, pea flecks */
   .f5 .top{background:linear-gradient(160deg,#f6ddba,#ecb56a);}
-  .f5 .mini{--mini-a:#f1c07e;--mini-b:#dd9540;--mini-c:#c07a2c;}
-  .f6 .top{background:linear-gradient(160deg,#efe0c6,#d8bd8a);}
-  .f6 .mini{--mini-a:#e6cf9f;--mini-b:#b98d55;--mini-c:#9c723f;}
+  .f5 .mini{--mini-a:#f1c07e;--mini-b:#dd9540;--mini-c:#c07a2c;--spk2:rgba(80,120,46,.72);--spk3:rgba(210,120,50,.6);}
+  /* Shepherd's Pie — mashed-potato base, pea + carrot + beef flecks */
+  .f6 .top{background:linear-gradient(160deg,#f2ead6,#ded0a8);}
+  .f6 .mini{--mini-a:#f1e7cf;--mini-b:#ddc9a0;--mini-c:#c3ad7e;--spk1:rgba(110,70,35,.55);--spk2:rgba(88,132,50,.72);--spk3:rgba(210,120,48,.7);}
   @media(max-width:900px){.lineup-grid{grid-template-columns:repeat(2,1fr);}}
   @media(max-width:600px){.lineup-grid{grid-template-columns:1fr;}}
 
@@ -467,7 +476,7 @@
           </div>
           <div class="flavor f4">
             <div class="top"><div class="mini"></div><span class="pill">6+ months</span></div>
-            <div class="body"><h3>Margherita Chicken</h3><p class="desc">Italian Inspired</p><p class="ing">Chicken · brown rice · tomato paste · cauliflower rice · olive oil · mozzarella</p><p class="spice"><b>Spices:</b> basil, oregano, garlic powder</p></div>
+            <div class="body"><h3>Margherita Chicken</h3><p class="desc">Italian Inspired</p><p class="ing">Chicken · potato · tomato paste · cauliflower rice · olive oil · mozzarella</p><p class="spice"><b>Spices:</b> basil, oregano, garlic powder</p></div>
           </div>
           <div class="flavor f5">
             <div class="top"><div class="mini"></div><span class="pill">6+ months</span></div>
@@ -475,7 +484,7 @@
           </div>
           <div class="flavor f6">
             <div class="top"><div class="mini"></div><span class="pill">6+ months</span></div>
-            <div class="body"><h3>Cheeseburger</h3><p class="desc">Family Favorite</p><p class="ing">Beef · mashed potatoes · carrots · onions · cheddar cheese</p><p class="spice"><b>Spices:</b> garlic powder, onion powder, paprika</p></div>
+            <div class="body"><h3>Shepherd's Pie</h3><p class="desc">Family Favorite</p><p class="ing">Beef · mashed potatoes · peas · carrots</p><p class="spice"><b>Spices:</b> garlic powder, onion powder, paprika</p></div>
           </div>
         </div>
       </div>
